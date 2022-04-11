@@ -6,6 +6,7 @@ public class Movement : MonoBehaviour
 {
     bool turnFlag = false; // false = turning left; true = turning right
     Rigidbody playerRB;
+    AudioSource thrustAudio;
     [SerializeField] float thrustSpeed = 350f;
     [SerializeField] float rotateSpeed = 350f;
 
@@ -13,6 +14,7 @@ public class Movement : MonoBehaviour
     void Start()
     {
         playerRB = GetComponent<Rigidbody>();
+        thrustAudio = GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
@@ -24,7 +26,12 @@ public class Movement : MonoBehaviour
 
     void ProcessThrust() {
         if (Input.GetKey(KeyCode.Space)) {
+            if (!thrustAudio.isPlaying) {
+                thrustAudio.Play();
+            }
             playerRB.AddRelativeForce(Vector3.up * thrustSpeed * Time.deltaTime);
+        } else {
+            thrustAudio.Stop();
         }
     }
 
