@@ -1,8 +1,9 @@
 using UnityEngine;
+using UnityEngine.SceneManagement; // Allows us to use SceneManager
 
 public class CollisionHandler : MonoBehaviour
 {
-    void OnCollisionEnter(Collision other) { // other is what we collided with
+    void OnCollisionEnter(Collision other) { // Other is what we collided with
         switch (other.gameObject.tag) {
             case "Friendly":
                 Debug.Log("Friendly hit");
@@ -17,8 +18,13 @@ public class CollisionHandler : MonoBehaviour
                 break;
             
             default:
-                Debug.Log("Object Hit");
+                ObstacleHit();
                 break;
         }
+    }
+
+    void ObstacleHit() {
+        int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
+        SceneManager.LoadScene(currentSceneIndex); // The parameter just finds the current scene, and the method reloads it
     }
 }
