@@ -4,17 +4,23 @@ using UnityEngine;
 
 public class Movement : MonoBehaviour
 {
-    bool turnFlag = false; // false = turning left; true = turning right
-    Rigidbody playerRB;
-    AudioSource thrustAudio;
+    // PARAMETERS - For tuning, typically set in the editor
     [SerializeField] float thrustSpeed = 350f;
     [SerializeField] float rotateSpeed = 350f;
+    [SerializeField] AudioClip mainEngine; // Source: https://www.youtube.com/watch?v=KHl1CPL3K1A
+
+    // CACHE - e.g. references for readability or speed
+    Rigidbody playerRB;
+    AudioSource playerAudio;
+
+    // STATE - Private instance (member) variables
+    bool turnFlag = false; // false = turning left; true = turning right
 
     // Start is called before the first frame update
     void Start()
     {
         playerRB = GetComponent<Rigidbody>();
-        thrustAudio = GetComponent<AudioSource>();
+        playerAudio = GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
@@ -26,12 +32,12 @@ public class Movement : MonoBehaviour
 
     void ProcessThrust() {
         if (Input.GetKey(KeyCode.Space)) {
-            if (!thrustAudio.isPlaying) {
-                thrustAudio.Play();
+            if (!playerAudio.isPlaying) {
+                playerAudio.PlayOneShot(mainEngine);
             }
             playerRB.AddRelativeForce(Vector3.up * thrustSpeed * Time.deltaTime);
         } else {
-            thrustAudio.Stop();
+            playerAudio.Stop();
         }
     }
 

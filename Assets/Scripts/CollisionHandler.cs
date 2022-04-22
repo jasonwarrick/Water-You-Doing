@@ -2,21 +2,29 @@ using UnityEngine;
 using UnityEngine.SceneManagement; // Allows us to use SceneManager
 
 public class CollisionHandler : MonoBehaviour {
+    [SerializeField] float reloadDelay = 1f;
+    [SerializeField] AudioClip hitAudio; // Source: https://mixkit.co/free-sound-effects/thud/ (Falling on Metal Roof)
+    [SerializeField] AudioClip winAudio; // Source: https://pixabay.com/sound-effects/tada-fanfare-a-6313/
+
+    AudioSource playerAudio;
+    
     int levelCap;
     int currentSceneIndex;
-    [SerializeField] float reloadDelay = 1f;
-    
+    bool isTransitioning;
 
     private void Start() {
+        isTransitioning = false;
         GetComponent<Movement>().enabled = true;
         levelCap = SceneManager.sceneCountInBuildSettings - 1; // Total number of scenes -1, to minimize variables and calculations
         currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
+        playerAudio = GetComponent<AudioSource>();
     }
 
     void OnCollisionEnter(Collision other) { // Other is what we collided with
+        if (isTransitioning) { return; }
+
         switch (other.gameObject.tag) {
             case "Friendly":
-                Debug.Log("Friendly hit");
                 break;
             
             case "Finish":
@@ -30,13 +38,19 @@ public class CollisionHandler : MonoBehaviour {
     }
 
     void Finish() {
+        playerAudio.Stop();
+        playerAudio.PlayOneShot(winAudio);
         StopControl();
         Invoke("LoadNextLevel", reloadDelay);
+        isTransitioning = true;
     }
 
     void Crash() {
+        playerAudio.Stop();
+        playerAudio.PlayOneShot(hitAudio);
         StopControl();
         Invoke("ReloadLevel", reloadDelay);
+        isTransitioning = true;
     }
 
     void StopControl() {
