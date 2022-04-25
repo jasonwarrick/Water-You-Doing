@@ -2,9 +2,13 @@ using UnityEngine;
 using UnityEngine.SceneManagement; // Allows us to use SceneManager
 
 public class CollisionHandler : MonoBehaviour {
-    [SerializeField] float reloadDelay = 1f;
+    [SerializeField] float hitDelay = 1f;
+    [SerializeField] float winDelay = 1.5f;
     [SerializeField] AudioClip hitAudio; // Source: https://mixkit.co/free-sound-effects/thud/ (Falling on Metal Roof)
     [SerializeField] AudioClip winAudio; // Source: https://pixabay.com/sound-effects/tada-fanfare-a-6313/
+
+    [SerializeField] ParticleSystem hitParticles;
+    [SerializeField] ParticleSystem winParticles;
 
     AudioSource playerAudio;
     
@@ -38,18 +42,20 @@ public class CollisionHandler : MonoBehaviour {
     }
 
     void Finish() {
+        winParticles.Play();
         playerAudio.Stop();
         playerAudio.PlayOneShot(winAudio);
         StopControl();
-        Invoke("LoadNextLevel", reloadDelay);
+        Invoke("LoadNextLevel", winDelay);
         isTransitioning = true;
     }
 
     void Crash() {
+        hitParticles.Play();
         playerAudio.Stop();
         playerAudio.PlayOneShot(hitAudio);
         StopControl();
-        Invoke("ReloadLevel", reloadDelay);
+        Invoke("ReloadLevel", hitDelay);
         isTransitioning = true;
     }
 
