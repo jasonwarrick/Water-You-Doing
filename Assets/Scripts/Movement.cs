@@ -9,6 +9,10 @@ public class Movement : MonoBehaviour
     [SerializeField] float rotateSpeed = 350f;
     [SerializeField] AudioClip mainEngine; // Source: https://www.youtube.com/watch?v=KHl1CPL3K1A
 
+    [SerializeField] ParticleSystem boostParticles;
+    [SerializeField] ParticleSystem leftParticles;
+    [SerializeField] ParticleSystem rightParticles;
+
     // CACHE - e.g. references for readability or speed
     Rigidbody playerRB;
     AudioSource playerAudio;
@@ -35,9 +39,14 @@ public class Movement : MonoBehaviour
             if (!playerAudio.isPlaying) {
                 playerAudio.PlayOneShot(mainEngine);
             }
+
+            if (!boostParticles.isPlaying) {
+                boostParticles.Play();
+            }
             playerRB.AddRelativeForce(Vector3.up * thrustSpeed * Time.deltaTime);
         } else {
             playerAudio.Stop();
+            boostParticles.Stop();
         }
     }
 
@@ -55,10 +64,23 @@ public class Movement : MonoBehaviour
         }
 
         if (!turnFlag && Input.GetKey(KeyCode.A) | Input.GetKey(KeyCode.LeftArrow)) { // call ApplyRotation respective to the active turn key
+            if (!rightParticles.isPlaying) {
+                rightParticles.Play();
+            }
+
             ApplyRotation(rotateSpeed);
+        } else if (!Input.GetKey(KeyCode.A) | !Input.GetKey(KeyCode.LeftArrow)) {
+            rightParticles.Stop();
         }
-        else if (turnFlag && Input.GetKey(KeyCode.D) | Input.GetKey(KeyCode.RightArrow)) {
+        
+        if (turnFlag && Input.GetKey(KeyCode.D) | Input.GetKey(KeyCode.RightArrow)) {
+            if (!leftParticles.isPlaying) {
+                leftParticles.Play();
+            }
+
             ApplyRotation(-rotateSpeed);
+        } else if (!Input.GetKey(KeyCode.D) | !Input.GetKey(KeyCode.RightArrow)) {
+            leftParticles.Stop();
         }
     }
 

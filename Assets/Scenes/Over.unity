@@ -323,10 +323,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 69305715, guid: afd5adc21fc1ddc4289d0deee7618191, type: 3}
-      propertyPath: winDelay
-      value: 1.5
-      objectReference: {fileID: 0}
     - target: {fileID: 59157966587651961, guid: afd5adc21fc1ddc4289d0deee7618191, type: 3}
       propertyPath: m_RootOrder
       value: 5
@@ -337,7 +333,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 59157966587651961, guid: afd5adc21fc1ddc4289d0deee7618191, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 2.61
+      value: 3.46
       objectReference: {fileID: 0}
     - target: {fileID: 59157966587651961, guid: afd5adc21fc1ddc4289d0deee7618191, type: 3}
       propertyPath: m_LocalPosition.z
