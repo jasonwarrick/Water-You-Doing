@@ -15,14 +15,34 @@ public class CollisionHandler : MonoBehaviour {
     int levelCap;
     int currentSceneIndex;
     bool isTransitioning;
+    bool disableCollisions;
 
-    private void Start() {
+    void Start() {
+        disableCollisions = false;
         isTransitioning = false;
         GetComponent<Movement>().enabled = true;
         levelCap = SceneManager.sceneCountInBuildSettings - 1; // Total number of scenes -1, to minimize variables and calculations
         currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
         playerAudio = GetComponent<AudioSource>();
     }
+
+    void Update() {
+        DebugKeys();
+    }
+
+    void DebugKeys() {
+        if (Input.GetKey(KeyCode.L)) // Next level key
+        {
+            LoadNextLevel();
+        }
+
+        if (Input.GetKeyDown(KeyCode.C)) // Turn off collisions
+        {
+            disableCollisions = !disableCollisions;
+            Debug.Log(disableCollisions);
+        }
+    }
+
 
     void OnCollisionEnter(Collision other) { // Other is what we collided with
         if (isTransitioning) { return; }
@@ -51,12 +71,14 @@ public class CollisionHandler : MonoBehaviour {
     }
 
     void Crash() {
-        hitParticles.Play();
-        playerAudio.Stop();
-        playerAudio.PlayOneShot(hitAudio);
-        StopControl();
-        Invoke("ReloadLevel", hitDelay);
-        isTransitioning = true;
+        if (!disableCollisions) {
+            hitParticles.Play();
+            playerAudio.Stop();
+            playerAudio.PlayOneShot(hitAudio);
+            StopControl();
+            Invoke("ReloadLevel", hitDelay);
+            isTransitioning = true;
+        }
     }
 
     void StopControl() {

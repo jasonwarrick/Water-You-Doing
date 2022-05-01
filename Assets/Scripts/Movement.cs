@@ -35,52 +35,96 @@ public class Movement : MonoBehaviour
     }
 
     void ProcessThrust() {
-        if (Input.GetKey(KeyCode.Space)) {
-            if (!playerAudio.isPlaying) {
-                playerAudio.PlayOneShot(mainEngine);
-            }
-
-            if (!boostParticles.isPlaying) {
-                boostParticles.Play();
-            }
-            playerRB.AddRelativeForce(Vector3.up * thrustSpeed * Time.deltaTime);
-        } else {
-            playerAudio.Stop();
-            boostParticles.Stop();
+        if (Input.GetKey(KeyCode.Space))
+        {
+            StartThrust();
+        }
+        else
+        {
+            StopThrust();
         }
     }
 
-    void ProcessRotation() {
-        if (Input.GetKeyDown(KeyCode.D) | Input.GetKeyDown(KeyCode.RightArrow)) { // favors the most recent key press
-            turnFlag = true;
-        } else if (Input.GetKey(KeyCode.A) | Input.GetKeyDown(KeyCode.LeftArrow)) {
-            turnFlag = false;
+    void StopThrust()
+    {
+        playerAudio.Stop();
+        boostParticles.Stop();
+    }
+
+    void StartThrust()
+    {
+        if (!playerAudio.isPlaying)
+        {
+            playerAudio.PlayOneShot(mainEngine);
         }
 
-        if (Input.GetKeyUp(KeyCode.D) | Input.GetKeyUp(KeyCode.RightArrow)) { // switch back to the held key if the recent one is released
-            turnFlag = false;
-        } else if (Input.GetKeyUp(KeyCode.A) | Input.GetKeyUp(KeyCode.LeftArrow)) {
-            turnFlag = true;
+        if (!boostParticles.isPlaying)
+        {
+            boostParticles.Play();
         }
 
-        if (!turnFlag && Input.GetKey(KeyCode.A) | Input.GetKey(KeyCode.LeftArrow)) { // call ApplyRotation respective to the active turn key
-            if (!rightParticles.isPlaying) {
-                rightParticles.Play();
-            }
+        playerRB.AddRelativeForce(Vector3.up * thrustSpeed * Time.deltaTime);
+    }
 
-            ApplyRotation(rotateSpeed);
-        } else if (!Input.GetKey(KeyCode.A) | !Input.GetKey(KeyCode.LeftArrow)) {
-            rightParticles.Stop();
-        }
-        
-        if (turnFlag && Input.GetKey(KeyCode.D) | Input.GetKey(KeyCode.RightArrow)) {
-            if (!leftParticles.isPlaying) {
+    void ProcessRotation()
+    {
+        SetTurnFlag();
+        TurnLeftCheck();
+        TurnRightCheck();
+    }
+
+    void TurnRightCheck()
+    {
+        if (turnFlag && Input.GetKey(KeyCode.D) | Input.GetKey(KeyCode.RightArrow))
+        {
+            if (!leftParticles.isPlaying)
+            {
                 leftParticles.Play();
             }
 
             ApplyRotation(-rotateSpeed);
-        } else if (!Input.GetKey(KeyCode.D) | !Input.GetKey(KeyCode.RightArrow)) {
+        }
+        else if (!Input.GetKey(KeyCode.D) | !Input.GetKey(KeyCode.RightArrow))
+        {
             leftParticles.Stop();
+        }
+    }
+
+    void TurnLeftCheck()
+    {
+        if (!turnFlag && Input.GetKey(KeyCode.A) | Input.GetKey(KeyCode.LeftArrow))
+        { // call ApplyRotation respective to the active turn key
+            if (!rightParticles.isPlaying)
+            {
+                rightParticles.Play();
+            }
+
+            ApplyRotation(rotateSpeed);
+        }
+        else if (!Input.GetKey(KeyCode.A) | !Input.GetKey(KeyCode.LeftArrow))
+        {
+            rightParticles.Stop();
+        }
+    }
+
+    void SetTurnFlag()
+    {
+        if (Input.GetKeyDown(KeyCode.D) | Input.GetKeyDown(KeyCode.RightArrow))
+        { // favors the most recent key press
+            turnFlag = true;
+        }
+        else if (Input.GetKey(KeyCode.A) | Input.GetKeyDown(KeyCode.LeftArrow))
+        {
+            turnFlag = false;
+        }
+
+        if (Input.GetKeyUp(KeyCode.D) | Input.GetKeyUp(KeyCode.RightArrow))
+        { // switch back to the held key if the recent one is released
+            turnFlag = false;
+        }
+        else if (Input.GetKeyUp(KeyCode.A) | Input.GetKeyUp(KeyCode.LeftArrow))
+        {
+            turnFlag = true;
         }
     }
 
